@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>matwiat — noname.6mc.pl</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0a0e0a;
+    font-family: 'JetBrains Mono', monospace;
+    background-image: radial-gradient(circle at 50% 50%, #0d1a0d 0%, #050705 100%);
+  }
+
+  .window {
+    width: 640px;
+    max-width: 92vw;
+    background: #0d120d;
+    border-radius: 8px;
+    box-shadow: 0 0 40px rgba(0,255,100,0.08), 0 20px 60px rgba(0,0,0,0.6);
+    overflow: hidden;
+    border: 1px solid #1e3a1e;
+  }
+
+  .titlebar {
+    background: #161c16;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #1e3a1e;
+  }
+
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot.red { background: #ff5f56; }
+  .dot.yellow { background: #ffbd2e; }
+  .dot.green { background: #27c93f; }
+
+  .titletext {
+    margin-left: 10px;
+    color: #6b8f6b;
+    font-size: 12px;
+  }
+
+  .body {
+    padding: 24px 26px 30px;
+    color: #4aff6b;
+    font-size: 14px;
+    line-height: 1.75;
+    min-height: 320px;
+  }
+
+  .prompt { color: #6b8f6b; }
+  .cmd { color: #e6ffe6; }
+  .key { color: #6b8f6b; }
+  .val { color: #4aff6b; }
+  .accent { color: #ffd35c; }
+  .link { color: #4ac9ff; }
+
+  .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 15px;
+    background: #4aff6b;
+    animation: blink 1s step-start infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .line { opacity: 0; animation: fadeIn 0.4s forwards; }
+  .l1 { animation-delay: 0.1s; }
+  .l2 { animation-delay: 0.5s; }
+  .l3 { animation-delay: 0.9s; }
+  .l4 { animation-delay: 1.3s; }
+  .l5 { animation-delay: 1.7s; }
+  .l6 { animation-delay: 2.1s; }
+  .l7 { animation-delay: 2.5s; }
+  .l8 { animation-delay: 2.9s; }
+  .l9 { animation-delay: 3.3s; }
+
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  .indent { padding-left: 20px; }
+</style>
+</head>
+<body>
+
+<div class="window">
+  <div class="titlebar">
+    <div class="dot red"></div>
+    <div class="dot yellow"></div>
+    <div class="dot green"></div>
+    <div class="titletext">matwiat@noname.6mc.pl: ~</div>
+  </div>
+  <div class="body">
+    <div class="line l1"><span class="prompt">guest@noname:~$</span> <span class="cmd">whoami matwiat</span></div>
+    <div class="line l2 indent"><span class="key">nick</span>      <span class="val">matwiat</span></div>
+    <div class="line l3 indent"><span class="key">rola</span>      <span class="accent">moderator</span> · <span class="accent">technik serwera</span></div>
+    <div class="line l4 indent"><span class="key">serwer</span>    <span class="link">noname.6mc.pl</span></div>
+    <div class="line l5 indent"><span class="key">status</span>    <span class="val">[online]</span></div>
+
+    <div class="line l6">&nbsp;</div>
+
+    <div class="line l7"><span class="prompt">guest@noname:~$</span> <span class="cmd">cat specjalizacje.txt</span></div>
+    <div class="line l8 indent">
+      > obsługa zgłoszeń i moderacja gracz-gracz<br>
+      > konfiguracja i tłumaczenie pluginów (Skript, EconomyShopGUI)<br>
+      > utrzymanie ekonomii i systemów serwera<br>
+      > wsparcie techniczne bot-hosting / Discord
+    </div>
+
+    <div class="line l9">&nbsp;<br><span class="prompt">guest@noname:~$</span> <span class="cursor"></span></div>
+  </div>
+</div>
+
+</body>
+</html>
